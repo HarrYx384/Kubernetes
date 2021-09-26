@@ -1,0 +1,154 @@
+FROM ubuntu:18.04
+LABEL Name="OpsTree"
+ENV Name=opstree
+ENV group=root
+ARG uid=1000
+ARG gid=1000
+RUN groupadd -g ${gid} $group
+RUN useradd -u ${uid} -g $group -s /bin/sh -m $Name
+RUN usermod -aG root $Name
+RUN apt-get install sudo
+RUN apt-get update -y
+RUN apt-get install nginx -y
+EXPOSE 80
+CMD ["nginx","-g","daemon off;"]
+USER $Name
+
+
+=====================
+useradd -d /home/$name -g root -G sudo -m -p $(echo "$name:$pass") $name
+
+FROM ubuntu
+
+MAINTAINER vikash
+
+
+RUN apt-get update
+
+RUN apt-get install -y vim wget dialog net-tools
+
+RUN apt-get install -y nginx  
+
+RUN rm -v /etc/nginx/nginx.conf
+
+ADD nginx.conf /etc/nginx/
+
+RUN echo "daemon off;" >> /etc/nginx/nginx.conf
+
+EXPOSE 80
+
+CMD service nginx start
+
+
+
+
+FROM centos:7
+RUN yum -y install epel-release
+RUN yum -y update
+RUN yum -y install vim
+RUN yum -y install nginx
+ADD index.html /usr/share/nginx/html/index.html
+EXPOSE 80/tcp
+CMD ["nginx", "-g daemon off;"]
+
+--------------------------------------------------------------------------
+
+jenkins-shared-library
+vars:----This directory holds all the global shred library code that can be called from a pipeline. it has all the library files with a groovy extension.
+ 
+src:--- it is a regular java source directory. it is added to the class path during every script compilation. here you can add custom groovy code to extend your shared library code.
+resources:--- all the non-groovy files required for you pipelines can be managed in this folder.
+
+
+Scenario:-
+
+after the maven build if specified word found console, for specified number of times or more, then set build to unstable. 
+
+
+-------------------------------------------
+
+
+bydefault pods are no-isolated; they accept traffic from any source.
+-- pods become isolated by having a network policy that selects them
+
+---- network policies do not conflict; they are additive. if any policy or policies select a pod, the pod is restricted to what is allowed by the union of those policies' ingress/egress rules. Thus, order of evaluation does not affect the policy result.
+
+There are four kinds of selector that can be specified in an ingree from section or egree to section;
+
+podselector
+namespaceSelector
+namespaceSelector and podSelector
+ipBlock
+
+----------------------------------------
+
+kubectl run hello-web --labels app=hello --image=nginx --port 8080 --expose
+
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: hello-allow-from-foo
+spec:
+  policyTypes:
+    - Ingress
+    podSelector:
+       matchLabels:
+            app: hello
+    ingress:
+    - from:
+      - podSelector: 
+         matchLabels:
+            app: foo
+
+kubectl run -l app=foo --image=alpine --restart=Never --rm -i -t test-1
+kubectl run -l app=foo1 --image=alpine --restart=Never --rm -i -t test-2
+
+
+
+sec-----------------egrees network policy
+
+kubectl run hello-web-2 --labels app=hello-2 --image=nginx --port 8080 --expose
+
+
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: foo-allow-to-hello
+spec:
+ policyTypes:
+ - Egress
+ podSelector:
+  matchLabels:
+      app: foo
+  egress:
+  - to:
+    - podSelector:
+         matchLabels:
+             app: hello
+  - ports:
+    - port: 53
+      protocol: TCP
+    - port: 53
+      protocol: UDP
+
+
+-----third----Namespace--------
+
+kind: NetworkPolicy
+apiVersion: network.k8s.io/v1
+metadata:
+  name: web-allow-all-ns-monitoring
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+       app: web
+  ingress:
+   - from:
+     - namespaceSelector:
+     team= operations
+       matchLabels:
+         team: operations
+       podSelector:
+         matchLabels:
+             type: monitoring
