@@ -1,0 +1,25 @@
+25  cd /etc/kubelet.d
+   26  mkdir /etc/kubelet.d
+   27  cd /etc/kubelet.d
+   28  ls
+   29  vim web.yaml
+   30  ls
+   31  KUBELET_ARGS="--cluster-dns=10.254.0.10 --cluster-domain=kube.local --pod-manifest-path=/etc/kubelet.d/"
+   32  docker ps
+   33  cat /etc/resolv.conf
+   34  kubeadm --version
+   35  kubeadm version
+   36  kubeadm upgrade plan
+   37  kubectl get node
+   38  kubectl taint node controlplane .
+   39  kubectl describe node controlplane
+   40  kubectl taint node controlplane node-role.kubernetes.io/master:NoSchedule-
+   41  kubectl taint node node-01 key=value:NoSchedule
+   42  kubectl get node
+   43  kubectl taint node node01 key=value:NoSchedule
+   44  kubectl taint node controlplane key=value:NoSchedule
+   45  kubectl taint node controlplane key=value:NoSchedule-
+   46  kubectl taint node node-01 key=value:NoSchedule-
+   47  kubectl taint node node01 key=value:NoSchedule-
+   48  kubectl get pod -o wide
+   49  history
